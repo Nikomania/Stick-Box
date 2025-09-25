@@ -1,5 +1,4 @@
-#include <Game.h>
-#include <GameObject.h>
+#include <Core/Game.h>
 
 int main(int argc, char** argv) {
   Game* game = &Game::GetInstance();

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5...3.27)
 project(The_Game)
 
-file(GLOB SourceFiles src/*.cpp)
+file(GLOB_RECURSE SourceFiles src/*.cpp)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
