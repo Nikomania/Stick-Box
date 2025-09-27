@@ -36,12 +36,12 @@ const std::string MUSIC_PATH = DEFAULT_GAME_PATH + "/resources/audio/BGM.wav";
 const std::string ZOMBIE_PATH = DEFAULT_GAME_PATH + "/resources/img/Enemy.png";
 
 // For Character
-const std::string CHARACTER_PATH = DEFAULT_GAME_PATH + "/resources/img/Player.png";
-const int CHARACTER_FRAME_TIME = 166; // how many frames in a second
+const std::string CHARACTER_PATH = DEFAULT_GAME_PATH + "/resources/new_resources/img/stick-box-v2.png";
+const int CHARACTER_FRAME_TIME = 333; // how many frames in a second
 const int CHARACTER_HP = 100;
 const int CHARACTER_DEATH_TIME = 5000;
-const int CHARACTER_frameCountW = 3;
-const int CHARACTER_frameCountH = 4;
+const int CHARACTER_frameCountW = 2;
+const int CHARACTER_frameCountH = 1;
 const int CHARACTER_INIT_X = 1280;
 const int CHARACTER_INIT_Y = 1280;
 const float CHARACTER_SPEED = 1;

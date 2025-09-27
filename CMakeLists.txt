@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5...3.27)
-project(The_Game)
+project(StickBox)
 
 file(GLOB_RECURSE SourceFiles src/*.cpp)
 

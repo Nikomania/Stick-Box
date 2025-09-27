@@ -29,16 +29,17 @@ Character::Character(GameObject& associated, std::string sprite, int hp) :
     CHARACTER_frameCountW,
     CHARACTER_frameCountH
   );
+  spriteRenderer->SetScale(4, 4);
   associated.AddComponent(spriteRenderer);
 
   Animator* animator = new Animator(associated);
-  animator->AddAnimation("walk", Animation(0, 5, CHARACTER_FRAME_TIME));
+  animator->AddAnimation("walk", Animation(0, 1, CHARACTER_FRAME_TIME));
   animator->AddAnimation(
     "walk-left",
-    Animation(0, 5, CHARACTER_FRAME_TIME, SDL_FLIP_HORIZONTAL)
+    Animation(0, 1, CHARACTER_FRAME_TIME, SDL_FLIP_HORIZONTAL)
   );
-  animator->AddAnimation("idle", Animation(6, 9, CHARACTER_FRAME_TIME));
-  animator->AddAnimation("death", Animation(10, 11, CHARACTER_FRAME_TIME));
+  animator->AddAnimation("idle", Animation(0, 1, CHARACTER_FRAME_TIME));
+  animator->AddAnimation("death", Animation(0, 0, CHARACTER_FRAME_TIME));
   animator->SetAnimation("idle");
   associated.AddComponent(animator);
 }
