@@ -36,26 +36,6 @@ void PlayerController::Update(float dt) {
   Character* character =
     static_cast<Character*>(character_ptr->GetComponent("Character"));
 
-  if (input.MousePress(LEFT_MOUSE_BUTTON)) {
-    character->Issue(
-      Character::Command(
-        Character::Command::CommandType::Shoot,
-        input.GetMouseX() + Camera::pos.x,
-        input.GetMouseY() + Camera::pos.y
-      )
-    );
-  }
-
-  if (input.KeyPress(R_KEY)) {
-    character->Issue(
-      Character::Command(
-        Character::Command::CommandType::Reload,
-        0,
-        0
-      )
-    );
-  }
-
   if (speed.Magnitude() > 0) {
     character->Issue(
       Character::Command(

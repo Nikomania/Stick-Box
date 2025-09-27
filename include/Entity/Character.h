@@ -9,8 +9,6 @@
 #include <memory>
 #include <queue>
 
-const Rect ALLOWED_BOX(BORDER_POS_X, BORDER_POS_Y, DEFAULT_MAP_WIDTH, DEFAULT_MAP_HEIGHT);
-
 class Character: public Component {
 public:
   Character(GameObject& associated, std::string sprite, int hp=CHARACTER_HP);
@@ -24,7 +22,7 @@ public:
 
   class Command {
     public:
-      enum CommandType {Move, Shoot, Reload};
+      enum CommandType {Move};
       CommandType type;
       Vec2 pos;
       Command(CommandType type, float x, float y);
@@ -36,10 +34,10 @@ public:
   static Character* player;
   bool godMode;
 private:
-  std::weak_ptr<GameObject> gun;
   std::queue<Command> taskQueue;
   Vec2 speed;
   float linearSpeed;
+  bool facingRight;
 
   int hp;
   bool hit;

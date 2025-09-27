@@ -6,6 +6,8 @@
 #include <Physics/Rect.h>
 #include <iostream>
 
+#define DEBUG
+
 class Collider: public Component {
 public:
   Collider(GameObject& associated, Vec2 scale = {1, 1}, Vec2 offset = {0, 0});

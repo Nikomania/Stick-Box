@@ -7,7 +7,6 @@
 #include <Manager/InputManager.h>
 #include <HUD/Camera.h>
 #include <Entity/Character.h>
-#include <Entity/Gun.h>
 #include <Controller/PlayerController.h>
 #include <Physics/Collision.h>
 #include <Physics/Collider.h>
@@ -15,6 +14,7 @@
 #include <State/EndState.h>
 #include <Core/Game.h>
 #include <DataStructure/constants.h>
+#include <Entity/Platform.h>
 
 StateStage::StateStage() : State(), backgroundMusic(), tileSet(nullptr) {
   sortY = true;
@@ -53,6 +53,14 @@ void StateStage::LoadAssets() {
   characterGO->AddComponent(new PlayerController(*characterGO));
   Camera::Follow(characterGO);
   AddObject(characterGO);
+
+  GameObject* platformGO = new GameObject();
+  platformGO->box.x = 1000;
+  platformGO->box.y = 1400;
+  platformGO->box.w = 300;
+  platformGO->box.h = 50;
+  platformGO->AddComponent(new Platform(*platformGO));
+  AddObject(platformGO);
 
   backgroundMusic.Open(MUSIC_PATH);
   SDL_Log("Music loaded!\n");

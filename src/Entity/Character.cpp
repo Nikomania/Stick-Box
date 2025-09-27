@@ -2,12 +2,13 @@
 #include <Manager/SpriteRenderer.h>
 #include <Manager/Animator.h>
 #include <DataStructure/Animation.h>
-#include <Entity/Gun.h>
 #include <Manager/InputManager.h>
 #include <Core/Game.h>
 #include <Physics/Collider.h>
 #include <HUD/Camera.h>
-#include <Entity/Bullet.h>
+#include <Physics/Gravity.h>
+#include <Entity/Platform.h>
+#include <Physics/Collision.h>
 
 Character* Character::player = nullptr;
 
@@ -22,6 +23,7 @@ Character::Character(GameObject& associated, std::string sprite, int hp) :
   hit(false),
   damageSound(CHARACTER_DAMAGE_SOUND),
   deathSound(CHARACTER_DEATH_SOUND),
+  facingRight(true),
   godMode(false) {
   SpriteRenderer* spriteRenderer = new SpriteRenderer(
     associated,
@@ -33,15 +35,19 @@ Character::Character(GameObject& associated, std::string sprite, int hp) :
   associated.AddComponent(spriteRenderer);
 
   Animator* animator = new Animator(associated);
-  animator->AddAnimation("walk", Animation(0, 1, CHARACTER_FRAME_TIME));
+  animator->AddAnimation("walk", Animation(2, 6, CHARACTER_WALK_FRAME_TIME));
   animator->AddAnimation(
     "walk-left",
-    Animation(0, 1, CHARACTER_FRAME_TIME, SDL_FLIP_HORIZONTAL)
+    Animation(2, 6, CHARACTER_WALK_FRAME_TIME, SDL_FLIP_HORIZONTAL)
   );
-  animator->AddAnimation("idle", Animation(0, 1, CHARACTER_FRAME_TIME));
-  animator->AddAnimation("death", Animation(0, 0, CHARACTER_FRAME_TIME));
+  animator->AddAnimation("idle", Animation(0, 1, CHARACTER_IDLE_FRAME_TIME));
+  animator->AddAnimation("idle-left", Animation(0, 1, CHARACTER_IDLE_FRAME_TIME, SDL_FLIP_HORIZONTAL));
+  animator->AddAnimation("death", Animation(0, 0, CHARACTER_DEATH_FRAME_TIME));
   animator->SetAnimation("idle");
   associated.AddComponent(animator);
+
+  Gravity* gravity = new Gravity(associated, GRAVITY);
+  associated.AddComponent(gravity);
 }
 
 Character::~Character() {
@@ -51,16 +57,6 @@ Character::~Character() {
 }
 
 void Character::Start() {
-  GameObject* gunGO = new GameObject();
-  std::weak_ptr<GameObject> associatedWeakPtr(
-    Game::GetInstance().GetCurrentState().GetObjectPtr(&associated)
-  );
-  Gun* gunComponent = new Gun(*gunGO, associatedWeakPtr);
-  gunGO->AddComponent(gunComponent);
-  Game::GetInstance().GetCurrentState().AddObject(gunGO);
-
-  gun = Game::GetInstance().GetCurrentState().GetObjectPtr(gunGO);
-
   Collider* collider = new Collider(associated, {0.65, 0.9}, {0, 2});
   associated.AddComponent(collider);
 }
@@ -89,42 +85,8 @@ void Character::Update(float dt) {
       Vec2 movement_dir = (command.pos).Normalize();
       speed = movement_dir * linearSpeed;
 
-      // Allow player to only move inside the map
-      if (
-        ALLOWED_BOX.Contains(
-          (speed * dt) + associated.box.GetPos() + Camera::pos
-        ) ||
-        player != this
-      ) {
-        associated.box.Move(speed * dt);
-        moving = true;
-      }
-      else {
-        speed = Vec2(0, 0);
-        moving = false;
-      }
-    } else if (command.type == Command::CommandType::Shoot) {
-      std::shared_ptr<GameObject> gunPtr = gun.lock();
-      Component* component = gunPtr->GetComponent("Gun");
-      if (component == nullptr) {
-        std::cout << "Error: No gun component found" << std::endl;
-        exit(1);
-      }
-      Gun *gunComponent = static_cast<Gun *>(component);
-      if (gunComponent->GetBulletCount() > 0) {
-        gunComponent->Shoot(command.pos);
-      } else {
-        gunComponent->Reload();
-      }
-    } else if (command.type == Command::CommandType::Reload) {
-      std::shared_ptr<GameObject> gunPtr = gun.lock();
-      Component* component = gunPtr->GetComponent("Gun");
-      if (component == nullptr) {
-        std::cout << "Error: No gun component found" << std::endl;
-        exit(1);
-      }
-      Gun *gunComponent = static_cast<Gun *>(component);  
-      gunComponent->Reload();
+      associated.box.Move(speed * dt);
+      moving = true;
     }
 
     taskQueue.pop();
@@ -138,13 +100,15 @@ void Character::Update(float dt) {
   Animator* animator = static_cast<Animator*>(animatorComponent);
 
   if (moving) {
-    if (speed.x >= 0) {
+    if (speed.x > 0) {
+      facingRight = true;
       animator->SetAnimation("walk");
-    } else {
+    } else if (speed.x < 0) {
+      facingRight = false;
       animator->SetAnimation("walk-left");
     }
   } else {
-    animator->SetAnimation("idle");
+    animator->SetAnimation(facingRight ? "idle": "idle-left");
     speed = Vec2(0, 0);
   }
 }
@@ -179,8 +143,6 @@ void Character::Damage(int damage) {
     animator->SetAnimation("death");
     deathSound.Play(1);
 
-    std::shared_ptr<GameObject> gunGO = gun.lock();
-    gunGO->RequestDelete();
     associated.RemoveComponent(associated.GetComponent("Collider"));
 
     dead = true;
@@ -201,11 +163,14 @@ Character::Command::Command(CommandType type, float x, float y) :
   pos(x, y) {}
 
 void Character::NotifyCollision(GameObject& other) {
-  if (other.GetComponent("Bullet")) {
-    Bullet* bullet = static_cast<Bullet*>(other.GetComponent("Bullet"));
-    if (bullet->targetsPlayer && Character::player == this || !bullet->targetsPlayer && Character::player != this) {
-      Damage(BULLET_DAMAGE);
+  if (other.GetComponent("Platform")) {
+    Platform* platform = static_cast<Platform*>(other.GetComponent("Platform"));
+    if (platform != nullptr) {
+      // Simple collision resolution: move the character up until it's no longer colliding
+      while (Collision::IsColliding(associated.box, other.box, associated.angleDeg * M_PI / 180, other.angleDeg * M_PI / 180)) {
+        associated.box.y -= 1; // Move up by 1 unit
+      }
+      speed.y = 0; // Stop vertical movement
     }
-    return;
   }
 }

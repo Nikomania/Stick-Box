@@ -6,13 +6,12 @@ const int DEFAULT_SCREEN_WIDTH = 1200;
 const int DEFAULT_SCREEN_HEIGHT = 900;
 const int DEFAULT_MAP_WIDTH = 1280 * 2;
 const int DEFAULT_MAP_HEIGHT = 1536 * 2;
-const int BORDER_POS_X = 640;
-const int BORDER_POS_Y = 512;
 const std::string DEFAULT_SCREEN_TITLE = "Stick Box";
 const std::string DEFAULT_GAME_PATH = "..";
 
 const int FPS = 144;
 const int FPS_PERIOD = 1000 / FPS; // 1000ms / fps
+const float GRAVITY = 0.5;
 
 // For Camera
 const float CAMERA_SPEED_DEFAULT = 0.7;
@@ -36,44 +35,19 @@ const std::string MUSIC_PATH = DEFAULT_GAME_PATH + "/resources/audio/BGM.wav";
 
 // For Character
 const std::string CHARACTER_PATH = DEFAULT_GAME_PATH + "/resources/new_resources/img/stick-box-v2.png";
-const int CHARACTER_FRAME_TIME = 333; // how many frames in a second
+const int CHARACTER_IDLE_FRAME_TIME = 333; // how many frames in a second
+const int CHARACTER_WALK_FRAME_TIME = 166; // how many frames in a second
+const int CHARACTER_DEATH_FRAME_TIME = 1000; // how many frames in a second
 const int CHARACTER_HP = 100;
 const int CHARACTER_DEATH_TIME = 5000;
-const int CHARACTER_frameCountW = 2;
+const int CHARACTER_frameCountW = 7;
 const int CHARACTER_frameCountH = 1;
 const int CHARACTER_INIT_X = 1280;
 const int CHARACTER_INIT_Y = 1280;
-const float CHARACTER_SPEED = 1;
+const float CHARACTER_SPEED = 0.5;
 const int CHARACTER_HIT_TIME = 500;
 const std::string CHARACTER_DEATH_SOUND = DEFAULT_GAME_PATH + "/resources/audio/Dead.wav";
 const std::string CHARACTER_DAMAGE_SOUND = DEFAULT_GAME_PATH + "/resources/audio/Hit0.wav";
-
-// For Gun
-const std::string GUN_PATH = DEFAULT_GAME_PATH + "/resources/img/Gun.png";
-const std::string GUN_SHOT_SOUND = DEFAULT_GAME_PATH + "/resources/audio/Range.wav";
-const std::string GUN_RELOAD_SOUND = DEFAULT_GAME_PATH + "/resources/audio/PumpAction.mp3";
-const int GUN_COOLDOWN = 830;
-const int GUN_FRAME_TIME = 166; // how many frames in a second
-const int GUN_FRAME_COUNT_W = 3;
-const int GUN_FRAME_COUNT_H = 2;
-const int BULLET_COUNT_DEFAULT = 6;
-const float GUN_CHARACTER_OFFSET = 60;
-const float GUN_BULLET_ANGLE = M_PI / 6; // 60º
-
-// For bullet
-const float BULLET_SPEED = 0.5;
-const int BULLET_DAMAGE = 30;
-const float BULLET_MAX_DISTANCE = 1000;
-const std::string BULLET_PATH = DEFAULT_GAME_PATH + "/resources/img/Bullet.png";
-
-// For AI
-const std::string AI_CHARACTER_PATH = DEFAULT_GAME_PATH + "/resources/img/NPC.png";
-const int AI_HP = 100;
-const int COOLDOWN_REST = 1000;
-const int AI_SPEED = 0.6;
-const int AI_DISTANCE = 350;
-const int AI_INIT_X = 0;
-const int AI_INIT_Y = 0;
 
 // For title image
 const std::string TITLE_IMAGE_PATH = DEFAULT_GAME_PATH + "/resources/img/Title.png";
