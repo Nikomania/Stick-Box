@@ -33,7 +33,6 @@ const int BG_DEFAULT_POS = 0;
 // Assets paths
 const std::string BG_PATH = DEFAULT_GAME_PATH + "/resources/img/Background.png";
 const std::string MUSIC_PATH = DEFAULT_GAME_PATH + "/resources/audio/BGM.wav";
-const std::string ZOMBIE_PATH = DEFAULT_GAME_PATH + "/resources/img/Enemy.png";
 
 // For Character
 const std::string CHARACTER_PATH = DEFAULT_GAME_PATH + "/resources/new_resources/img/stick-box-v2.png";
