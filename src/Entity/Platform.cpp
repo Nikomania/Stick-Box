@@ -42,10 +42,10 @@ bool Platform::Is(std::string type) {
   return type == "Platform";
 }
 
-void Platform::NotifyCollision(GameObject& other) {
+void Platform::NotifyCollision(GameObject& other, Vec2 MTV) {
   if (other.GetComponent("Character")) {
     Character* character = static_cast<Character*>(other.GetComponent("Character"));
-    if (character == Character::player) {
+    if (character == Character::player && MTV.y < 0) {
       playerOnTop = true;
       notifiedCollision = true;
     }

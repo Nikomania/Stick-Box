@@ -1,6 +1,7 @@
 #pragma once
 #include <Physics/Rect.h>
 #include <DataStructure/Component.h>
+#include <Physics/Vec2.h>
 #include <iostream>
 #include <vector>
 
@@ -26,7 +27,7 @@ public:
 
   static int Compare(const void * a, const void * b);
 
-  void NotifyCollision(GameObject& other);
+  void NotifyCollision(GameObject& other, Vec2 MTV);
 
   Rect box;
   double angleDeg;

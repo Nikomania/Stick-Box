@@ -83,9 +83,9 @@ int GameObject::Compare(const void * a, const void * b) {
   return 0;
 }
 
-void GameObject::NotifyCollision(GameObject& other) {
+void GameObject::NotifyCollision(GameObject& other, Vec2 MTV) {
   const int size = components.size();
   for (int i = 0; i < size; i++) {
-    components[i]->NotifyCollision(other);
+    components[i]->NotifyCollision(other, MTV);
   }
 }

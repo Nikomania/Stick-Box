@@ -1,5 +1,8 @@
 #pragma once
 #include <iostream>
+#include <Physics/Vec2.h>
+#include <string>
+
 
 class GameObject;
 
@@ -15,5 +18,5 @@ public:
   virtual void Render() = 0;
   virtual bool Is(std::string type) = 0;
 
-  virtual void NotifyCollision(GameObject& other);
+  virtual void NotifyCollision(GameObject& other, Vec2 MTV);
 };

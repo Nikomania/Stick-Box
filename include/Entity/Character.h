@@ -18,7 +18,7 @@ public:
   void Update(float dt) override;
   void Render() override;
   bool Is(std::string type) override;
-  void NotifyCollision(GameObject& other) override;
+  void NotifyCollision(GameObject& other, Vec2 MTV) override;
 
   class Command {
     public:

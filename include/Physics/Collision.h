@@ -49,7 +49,7 @@ class Collision {
 			return true;
 		}
 
-		static inline Vec2* GetCollisionDirection(Rect& a, Rect& b, float angleOfA, float angleOfB) {
+		static inline Vec2* GetMTV(Rect& a, Rect& b, float angleOfA, float angleOfB) {
 			Vec2 A[] = { Vec2( a.x, a.y + a.h ),
 										Vec2( a.x + a.w, a.y + a.h ),
 										Vec2( a.x + a.w, a.y ),
@@ -108,8 +108,7 @@ class Collision {
 			Vec2* outCollisionDir = new Vec2();
 
 			// normalizado: direção da colisão (do centro de A para centro de B pelo eixo de menor penetração)
-			*outCollisionDir = minAxis.Normalize();
-			// se preferir também a profundidade de penetração, poderia retornar minAxis * minOverlap
+			*outCollisionDir = minAxis.Normalize() * minOverlap * -1.0f;
 			return outCollisionDir;
 	}
 };

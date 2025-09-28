@@ -82,19 +82,21 @@ void Character::Update(float dt) {
   InputManager& input = InputManager::GetInstance();
 
   bool moving = false;
+  speed = Vec2(0, 0);
   while (!taskQueue.empty()) {
     auto command = taskQueue.front();
 
     if (command.type == Command::CommandType::Move) {
       Vec2 movement_dir = (command.pos).Normalize();
-      speed = movement_dir * linearSpeed;
+      speed += movement_dir * linearSpeed;
 
-      associated.box.Move(speed * dt);
       moving = true;
     }
 
     taskQueue.pop();
   }
+
+  associated.box.Move(speed * dt);
 
   Component* animatorComponent = associated.GetComponent("Animator");
   if (animatorComponent == nullptr) {
@@ -113,7 +115,6 @@ void Character::Update(float dt) {
     }
   } else {
     animator->SetAnimation(facingRight ? "idle": "idle-left");
-    speed = Vec2(0, 0);
   }
 }
 
@@ -166,4 +167,4 @@ Character::Command::Command(CommandType type, float x, float y) :
   type(type),
   pos(x, y) {}
 
-void Character::NotifyCollision(GameObject& other) {}
+void Character::NotifyCollision(GameObject& other, Vec2 MTV) {}

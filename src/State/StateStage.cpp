@@ -118,15 +118,18 @@ void StateStage::Update(float dt) {
       for (int j = i + 1; j < size2; j++) {
         if (objectArray[j]->GetComponent("Collider")) {
           Collider* otherCollider = static_cast<Collider*>(objectArray[j]->GetComponent("Collider"));
+          Vec2* MTV = Collision::GetMTV(
+            collider->box, otherCollider->box,
+            objectArray[i]->angleDeg * M_PI / 180,
+            objectArray[j]->angleDeg * M_PI / 180
+          );
           if (
-            Collision::IsColliding(
-              collider->box, otherCollider->box,
-              objectArray[i]->angleDeg * M_PI / 180,
-              objectArray[j]->angleDeg * M_PI / 180
-            )
+            MTV != nullptr
           ) {
-            objectArray[i]->NotifyCollision(*objectArray[j]);
-            objectArray[j]->NotifyCollision(*objectArray[i]);
+            objectArray[i]->NotifyCollision(*objectArray[j], *MTV);
+            objectArray[j]->NotifyCollision(*objectArray[i], *MTV);
+
+            delete MTV;
           }
         }
       }

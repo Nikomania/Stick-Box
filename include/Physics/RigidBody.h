@@ -13,8 +13,8 @@ public:
   void Render() override;
   bool Is(std::string type) override;
 
-  void NotifyCollision(GameObject& other) override;
+  void NotifyCollision(GameObject& other, Vec2 MTV) override;
 private:
-  Vec2* collisionDirection = nullptr;
+  Vec2 MTV;
   bool isColliding = false;
 };
