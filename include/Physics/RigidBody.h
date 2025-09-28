@@ -3,20 +3,18 @@
 #include <DataStructure/Component.h>
 #include <Core/GameObject.h>
 
-class Gravity : public Component {
+class RigidBody : public Component {
 public:
-  Gravity(GameObject& associated, float g);
-  ~Gravity();
+  RigidBody(GameObject& associated);
+  ~RigidBody();
 
   void Start() override;
   void Update(float dt) override;
   void Render() override;
   bool Is(std::string type) override;
 
-  inline float getG() const { return g; }
-  void turnOff();
-  void turnOn();
+  void NotifyCollision(GameObject& other) override;
 private:
-  float g;
-  bool active = true;
+  Vec2* collisionDirection = nullptr;
+  bool isColliding = false;
 };

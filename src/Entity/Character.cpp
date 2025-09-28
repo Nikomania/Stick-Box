@@ -9,6 +9,7 @@
 #include <Physics/Gravity.h>
 #include <Entity/Platform.h>
 #include <Physics/Collision.h>
+#include <Physics/RigidBody.h>
 
 Character* Character::player = nullptr;
 
@@ -48,6 +49,9 @@ Character::Character(GameObject& associated, std::string sprite, int hp) :
 
   Gravity* gravity = new Gravity(associated, GRAVITY);
   associated.AddComponent(gravity);
+
+  RigidBody* rigidBody = new RigidBody(associated);
+  associated.AddComponent(rigidBody);
 }
 
 Character::~Character() {
@@ -162,15 +166,4 @@ Character::Command::Command(CommandType type, float x, float y) :
   type(type),
   pos(x, y) {}
 
-void Character::NotifyCollision(GameObject& other) {
-  if (other.GetComponent("Platform")) {
-    Platform* platform = static_cast<Platform*>(other.GetComponent("Platform"));
-    if (platform != nullptr) {
-      // Simple collision resolution: move the character up until it's no longer colliding
-      while (Collision::IsColliding(associated.box, other.box, associated.angleDeg * M_PI / 180, other.angleDeg * M_PI / 180)) {
-        associated.box.y -= 1; // Move up by 1 unit
-      }
-      speed.y = 0; // Stop vertical movement
-    }
-  }
-}
+void Character::NotifyCollision(GameObject& other) {}
