@@ -7,6 +7,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <time.h>
 #include <DataStructure/constants.h>
+#include <cmath>
 
 Game* Game::instance = nullptr;
 
@@ -116,7 +117,7 @@ void Game::Run() {
   while (!stateStack.empty() && !GetCurrentState().QuitRequested()) {
     // SDL_Log("Time for frame: %.2f ms\n", dt);
     CalculateDeltaTime();
-    
+
     if (GetCurrentState().PopRequested()) {
       stateStack.pop();
       std::cout << "Popped state!\n";
@@ -143,11 +144,11 @@ void Game::Run() {
 
     // calculate how much time to wait to achieve the desired FPS,
     // considering the time already spent in the frame
-    float wait_next_frame = FPS_PERIOD - (SDL_GetTicks() - frameStart);
+    uint32_t wait_next_frame = static_cast<uint32_t>(std::lround(FPS_PERIOD - (SDL_GetTicks() - frameStart)));
     if (wait_next_frame < FPS_PERIOD) {
       SDL_Delay(wait_next_frame);
     }
-  };
+  }
 
   if (!stateStack.empty()) {
     std::cout << "Deleting state stack...\n";
@@ -162,10 +163,10 @@ void Game::ClearStack() {
 }
 
 void Game::CalculateDeltaTime() {
-  dt = SDL_GetTicks() - frameStart;
+  dt = std::min(static_cast<float>(SDL_GetTicks() - frameStart), FPS_PERIOD);
   frameStart = SDL_GetTicks();
 }
 
 float Game::GetDeltaTime() {
   return dt;
-} 
+}

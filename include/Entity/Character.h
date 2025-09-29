@@ -22,10 +22,13 @@ public:
 
   class Command {
     public:
-      enum CommandType {Move};
+      enum CommandType {
+        Move,
+        Jump
+      };
       CommandType type;
-      Vec2 pos;
-      Command(CommandType type, float x, float y);
+      void *data;
+      Command(CommandType type, void *data = nullptr);
   };
 
   void Issue(Command task);
@@ -35,8 +38,8 @@ public:
   bool godMode;
 private:
   std::queue<Command> taskQueue;
-  Vec2 speed;
   float linearSpeed;
+  float jumpSpeed;
   bool facingRight;
 
   int hp;

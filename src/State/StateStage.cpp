@@ -127,7 +127,7 @@ void StateStage::Update(float dt) {
             MTV != nullptr
           ) {
             objectArray[i]->NotifyCollision(*objectArray[j], *MTV);
-            objectArray[j]->NotifyCollision(*objectArray[i], *MTV);
+            objectArray[j]->NotifyCollision(*objectArray[i], (*MTV) * -1);
 
             delete MTV;
           }

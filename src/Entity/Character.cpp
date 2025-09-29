@@ -6,17 +6,15 @@
 #include <Core/Game.h>
 #include <Physics/Collider.h>
 #include <HUD/Camera.h>
-#include <Physics/Gravity.h>
 #include <Entity/Platform.h>
 #include <Physics/Collision.h>
-#include <Physics/RigidBody.h>
+
 
 Character* Character::player = nullptr;
 
 Character::Character(GameObject& associated, std::string sprite, int hp) :
   Component(associated),
   hp(hp),
-  speed(0, 0),
   linearSpeed(CHARACTER_SPEED),
   deathTimer(),
   hitTimer(),
@@ -25,7 +23,8 @@ Character::Character(GameObject& associated, std::string sprite, int hp) :
   damageSound(CHARACTER_DAMAGE_SOUND),
   deathSound(CHARACTER_DEATH_SOUND),
   facingRight(true),
-  godMode(false) {
+  godMode(false),
+  jumpSpeed(CHARACTER_JUMP_SPEED) {
   SpriteRenderer* spriteRenderer = new SpriteRenderer(
     associated,
     sprite,
@@ -46,12 +45,6 @@ Character::Character(GameObject& associated, std::string sprite, int hp) :
   animator->AddAnimation("death", Animation(0, 0, CHARACTER_DEATH_FRAME_TIME));
   animator->SetAnimation("idle");
   associated.AddComponent(animator);
-
-  Gravity* gravity = new Gravity(associated, GRAVITY);
-  associated.AddComponent(gravity);
-
-  RigidBody* rigidBody = new RigidBody(associated);
-  associated.AddComponent(rigidBody);
 }
 
 Character::~Character() {
@@ -61,7 +54,14 @@ Character::~Character() {
 }
 
 void Character::Start() {
-  Collider* collider = new Collider(associated, {0.65, 0.9}, {0, 2});
+  Collider* collider = new Collider(
+    associated,
+    {0.65, 0.9},
+    {0, 2},
+    false,
+    GRAVITY,
+    MAX_CHARACTER_SPEED
+  );
   associated.AddComponent(collider);
 }
 
@@ -81,22 +81,45 @@ void Character::Update(float dt) {
 
   InputManager& input = InputManager::GetInstance();
 
+  Collider* collider = static_cast<Collider*>(associated.GetComponent("Collider"));
+  if (collider == nullptr) {
+    std::cout << "Error: No collider component found" << std::endl;
+    exit(1);
+  }
+
+  // debug test
+  if (input.KeyPress(R_KEY)) {
+    associated.box.SetPos({CHARACTER_INIT_X, CHARACTER_INIT_Y});
+  }
+
   bool moving = false;
-  speed = Vec2(0, 0);
   while (!taskQueue.empty()) {
     auto command = taskQueue.front();
 
-    if (command.type == Command::CommandType::Move) {
-      Vec2 movement_dir = (command.pos).Normalize();
-      speed += movement_dir * linearSpeed;
+    switch (command.type) {
+    case Command::CommandType::Move: {
+        int direction = *((int*) command.data);
+        delete (int*) command.data;
 
-      moving = true;
+        collider->speed.x = direction * linearSpeed;
+        facingRight = direction > 0;
+        moving = true;
+      }
+      break;
+    case Command::CommandType::Jump: {
+        if (collider->IsOnGround()) {
+          collider->speed.y = -jumpSpeed;
+        }
+      }
+    default:
+      break;
     }
 
     taskQueue.pop();
   }
-
-  associated.box.Move(speed * dt);
+  if (!moving) {
+    collider->speed.x = 0;
+  }
 
   Component* animatorComponent = associated.GetComponent("Animator");
   if (animatorComponent == nullptr) {
@@ -106,13 +129,7 @@ void Character::Update(float dt) {
   Animator* animator = static_cast<Animator*>(animatorComponent);
 
   if (moving) {
-    if (speed.x > 0) {
-      facingRight = true;
-      animator->SetAnimation("walk");
-    } else if (speed.x < 0) {
-      facingRight = false;
-      animator->SetAnimation("walk-left");
-    }
+      animator->SetAnimation(facingRight ? "walk" : "walk-left");
   } else {
     animator->SetAnimation(facingRight ? "idle": "idle-left");
   }
@@ -163,8 +180,8 @@ void Character::Damage(int damage) {
   hitTimer.Restart();
 }
 
-Character::Command::Command(CommandType type, float x, float y) :
+Character::Command::Command(CommandType type, void* data) :
   type(type),
-  pos(x, y) {}
+  data(data) {}
 
 void Character::NotifyCollision(GameObject& other, Vec2 MTV) {}

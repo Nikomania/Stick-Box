@@ -1,4 +1,5 @@
 #include <Physics/Collider.h>
+#include <DataStructure/constants.h>
 #include <cmath>
 
 #ifdef DEBUG
@@ -8,15 +9,48 @@
 #include <SDL2/SDL.h>
 #endif // DEBUG
 
-Collider::Collider(GameObject& associated, Vec2 scale, Vec2 offset):
-Component(associated), scale(scale), offset(offset), box() {}
+Collider::Collider(
+	GameObject& associated,
+	Vec2 scale,
+	Vec2 offset,
+	bool isStatic,
+	float gravity,
+	float maxVelocity
+):
+Component(associated),
+scale(scale),
+offset(offset),
+box(),
+speed(),
+gravity(gravity),
+isStatic(isStatic),
+maxVelocity(maxVelocity),
+accelerations() {}
 
-void Collider::Start() {}
+void Collider::Start() {
+	accelerations["gravity"] = Vec2(0, gravity);
+}
 
 void Collider::Update(float dt) {
-	box.w = associated.box.w * scale.x;
-	box.h = associated.box.h * scale.y;
-	box.SetCenter(associated.box.GetCenter() + offset);
+	if (!isStatic) {
+		for (
+			auto accel_it = accelerations.begin();
+			accel_it != accelerations.end();
+			++accel_it
+		) {
+			speed += accel_it->second * dt;
+		}
+		if (speed.Magnitude() > maxVelocity && maxVelocity != -1) {
+			speed = speed.Normalize() * maxVelocity;
+		}
+
+		associated.box.Move(speed * dt);
+	}
+	
+	// this component (collider) is always updated after its mainComponent
+	// onGround will have the correct value from NotifyCollision
+	onGround = false;
+	UpdateBox();
 }
 
 bool Collider::Is(std::string type) {
@@ -56,4 +90,37 @@ void Collider::Render() {
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 255, 0, 0, SDL_ALPHA_OPAQUE);
 	SDL_RenderDrawLines(Game::GetInstance().GetRenderer(), points, 5);
 #endif // DEBUG
+}
+
+void Collider::NotifyCollision(GameObject& other, Vec2 MTV) {
+	if (isStatic) return;
+
+	onGround = MTV.y < 0 && static_cast<Collider*>(other.GetComponent("Collider"))->IsStatic();
+	associated.box.Move(MTV);
+	if (MTV.x != 0) speed.x = 0;
+	if (MTV.y != 0) speed.y = 0;
+	UpdateBox();
+}
+
+void Collider::UpdateBox() {
+	box.w = associated.box.w * scale.x;
+	box.h = associated.box.h * scale.y;
+	box.SetCenter(associated.box.GetCenter() + offset);
+}
+
+Vec2 Collider::RemoveAcceleration(std::string id) {
+	Vec2 removed = accelerations[id];
+	accelerations.erase(id);
+	return removed;
+}
+
+void Collider::SetMaxVelocity(float maxVelocity) {
+	this->maxVelocity = maxVelocity <= 0 ? -1 : maxVelocity;
+}
+
+void Collider::AddSpeed(Vec2 deltaSpeed) {
+	speed += deltaSpeed;
+	if (speed.Magnitude() > maxVelocity && maxVelocity != -1) {
+		speed = speed.Normalize() * maxVelocity;
+	}
 }

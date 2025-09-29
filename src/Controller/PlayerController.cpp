@@ -12,23 +12,6 @@ void PlayerController::Start() {}
 
 void PlayerController::Update(float dt) {
   InputManager& input = InputManager::GetInstance();
-  Vec2 speed = Vec2(0, 0);
-  
-  if (input.IsKeyDown(W_KEY) || input.IsKeyDown(UP_ARROW_KEY)) {
-    speed.y -= 1;
-  }
-
-  if (input.IsKeyDown(S_KEY) || input.IsKeyDown(DOWN_ARROW_KEY)) {
-    speed.y += 1;
-  }
-
-  if (input.IsKeyDown(A_KEY) || input.IsKeyDown(LEFT_ARROW_KEY)) {
-    speed.x -= 1;
-  }
-
-  if (input.IsKeyDown(D_KEY) || input.IsKeyDown(RIGHT_ARROW_KEY)) {
-    speed.x += 1;
-  }
 
   std::shared_ptr<GameObject> character_ptr = 
     Game::GetInstance().GetCurrentState().GetObjectPtr(&associated).lock();
@@ -36,12 +19,28 @@ void PlayerController::Update(float dt) {
   Character* character =
     static_cast<Character*>(character_ptr->GetComponent("Character"));
 
-  if (speed.Magnitude() > 0) {
+  if (input.IsKeyDown(SPACE_BAR)) {
     character->Issue(
       Character::Command(
-        Character::Command::CommandType::Move,
-        speed.x,
-        speed.y
+        Character::Command::CommandType::Jump
+      )
+    );
+  }
+
+  if (input.IsKeyDown(A_KEY) || input.IsKeyDown(LEFT_ARROW_KEY)) {
+    int* data = new int(-1);
+    character->Issue(
+      Character::Command(
+        Character::Command::CommandType::Move, (void*) data
+      )
+    );
+  }
+
+  if (input.IsKeyDown(D_KEY) || input.IsKeyDown(RIGHT_ARROW_KEY)) {
+    int* data = new int(1);
+    character->Issue(
+      Character::Command(
+        Character::Command::CommandType::Move, (void*) data
       )
     );
   }
