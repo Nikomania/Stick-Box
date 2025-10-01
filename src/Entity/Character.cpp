@@ -6,7 +6,7 @@
 #include <Core/Game.h>
 #include <Physics/Collider.h>
 #include <HUD/Camera.h>
-#include <Entity/Platform.h>
+#include <Level/Platform.h>
 #include <Physics/Collision.h>
 
 

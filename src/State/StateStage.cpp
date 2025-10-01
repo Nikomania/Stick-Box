@@ -14,7 +14,7 @@
 #include <State/EndState.h>
 #include <Core/Game.h>
 #include <DataStructure/constants.h>
-#include <Entity/Platform.h>
+#include <Level/Platform.h>
 
 StateStage::StateStage() : State(), backgroundMusic(), tileSet(nullptr) {
   sortY = true;
