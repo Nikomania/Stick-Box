@@ -25,11 +25,11 @@ speed(),
 gravity(gravity),
 isStatic(isStatic),
 maxVelocity(maxVelocity),
-accelerations() {}
-
-void Collider::Start() {
+accelerations() {
 	accelerations["gravity"] = Vec2(0, gravity);
 }
+
+void Collider::Start() {}
 
 void Collider::Update(float dt) {
 	if (!isStatic) {

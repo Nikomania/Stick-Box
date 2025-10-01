@@ -31,7 +31,7 @@ void Platform::Update(float dt) {
     playerOnTop = false;
   }
 
-  std::cout << "Player " << (playerOnTop ? "" : "not ") << "on top of platform\n";
+  // std::cout << "Player " << (playerOnTop ? "" : "not ") << "on top of platform\n";
 
   notifiedCollision = false;
 }

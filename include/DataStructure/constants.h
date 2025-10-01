@@ -11,7 +11,7 @@ const std::string DEFAULT_GAME_PATH = "..";
 
 const int FPS = 144;
 const float FPS_PERIOD = 1000.0f / FPS; // 1000ms / fps
-const float GRAVITY = 0.1f;
+const float GRAVITY = 0.001f;
 
 // For Camera
 const float CAMERA_SPEED_DEFAULT = 0.7f;
@@ -45,8 +45,8 @@ const int CHARACTER_frameCountH = 1;
 const int CHARACTER_INIT_X = 1280;
 const int CHARACTER_INIT_Y = 600;
 const float CHARACTER_SPEED = 0.5f;
-const float CHARACTER_JUMP_SPEED = 1.0f;
-const float MAX_CHARACTER_SPEED = 3.0f;
+const float CHARACTER_JUMP_SPEED = 0.7f;
+const float MAX_CHARACTER_SPEED = 1.0f;
 const int CHARACTER_HIT_TIME = 500;
 const std::string CHARACTER_DEATH_SOUND = DEFAULT_GAME_PATH + "/resources/audio/Dead.wav";
 const std::string CHARACTER_DAMAGE_SOUND = DEFAULT_GAME_PATH + "/resources/audio/Hit0.wav";
