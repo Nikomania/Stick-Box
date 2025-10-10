@@ -1,14 +1,13 @@
 #pragma once
 
-#include <DataStructure/State.h>
+#include <DataStructure/LevelState.h>
 #include <Core/GameObject.h>
 #include <Resource/Music.h>
 #include <Level/TileSet.h>
 
-class StateStage: public State {
+class CloseCombatState: public LevelState {
 public:
-  StateStage();
-  ~StateStage() override;
+  CloseCombatState(exit_t playerEntrance=LEFT);
 
   void LoadAssets() override;
   void Update(float dt) override;

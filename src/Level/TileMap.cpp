@@ -73,13 +73,19 @@ void TileMap::RenderLayer(int layer) {
     std::cout << "Error: invalid layer " << layer << std::endl;
     exit(1);
   }
+  float parallax[] = {
+    // 0.2f, // when i implement one more layer
+    0.1f,
+    0.0f
+  };
 
   for (int y = 0; y < mapHeight; y++) {
     for (int x = 0; x < mapWidth; x++) {
       tileSet->RenderTile(
         At(x, y, layer),
-        x * tileSet->GetTileWidth() + associated.box.x + (layer == 1 ? 0 : Camera::pos.x * 0.1),
-        y * tileSet->GetTileHeight() + associated.box.y + (layer == 1 ? 0 : Camera::pos.y * 0.1)
+        // paralax effect: Camera::pos.x * parallax[layer]
+        x * tileSet->GetTileWidth() + associated.box.x + Camera::pos.x * parallax[layer],
+        y * tileSet->GetTileHeight() + associated.box.y + Camera::pos.y * parallax[layer]
       );
     }
   }

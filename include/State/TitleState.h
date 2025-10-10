@@ -4,7 +4,6 @@
 class TitleState: public State {
 public:
   TitleState();
-  ~TitleState() override;
 
   void LoadAssets() override;
   void Update(float dt) override;

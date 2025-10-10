@@ -2,16 +2,12 @@
 #include <Core/GameObject.h>
 #include <Manager/SpriteRenderer.h>
 #include <Manager/InputManager.h>
-#include <State/StateStage.h>
+#include <State/CloseCombatState.h>
 #include <Core/Game.h>
 #include <Resource/Text.h>
 #include <DataStructure/constants.h>
 
 TitleState::TitleState() : State() {}
-
-TitleState::~TitleState() {
-  objectArray.clear();
-}
 
 void TitleState::LoadAssets() {
   GameObject* titleGO = new GameObject();
@@ -51,7 +47,7 @@ void TitleState::Update(float dt) {
   }
 
   if (input.KeyPress(SPACE_BAR)) {
-    Game::GetInstance().Push(new StateStage());
+    Game::GetInstance().Push(new CloseCombatState());
   }
 
   UpdateArray(dt);

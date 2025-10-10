@@ -13,6 +13,12 @@ const int FPS = 144;
 const float FPS_PERIOD = 1000.0f / FPS; // 1000ms / fps
 const float GRAVITY = 0.001f;
 
+// For level 1
+const float LEVEL1_START_X = 0.0f;
+const float LEVEL1_START_Y = 0.0f;
+const float LEVEL1_END_X = 2560.0f;
+const float LEVEL1_END_Y = 1536.0f;
+
 // For Camera
 const float CAMERA_SPEED_DEFAULT = 0.7f;
 

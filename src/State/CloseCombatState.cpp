@@ -1,4 +1,4 @@
-#include <State/StateStage.h>
+#include <State/CloseCombatState.h>
 #include <Resource/Music.h>
 #include <Core/GameObject.h>
 #include <Manager/SpriteRenderer.h>
@@ -16,16 +16,15 @@
 #include <DataStructure/constants.h>
 #include <Level/Platform.h>
 
-StateStage::StateStage() : State(), backgroundMusic(), tileSet(nullptr) {
+CloseCombatState::CloseCombatState(exit_t playerEntrance) :
+LevelState(playerEntrance),
+backgroundMusic(),
+tileSet(nullptr) {
   sortY = true;
-  SDL_Log("StateStage created!\n");
+  SDL_Log("CloseCombatState created!\n");
 }
 
-StateStage::~StateStage() {
-  objectArray.clear();
-}
-
-void StateStage::LoadAssets() {
+void CloseCombatState::LoadAssets() {
   GameObject* bgGO = new GameObject();
   bgGO->box.x = BG_DEFAULT_POS;
   bgGO->box.y = BG_DEFAULT_POS;
@@ -68,12 +67,12 @@ void StateStage::LoadAssets() {
   SDL_Log("Assets loaded!\n");
 }
 
-void StateStage::Start() {
+void CloseCombatState::Start() {
   if (!started) {
     LoadAssets();
 
     StartArray();
-    std::cout << "StateStage started!\n";
+    std::cout << "CloseCombatState started!\n";
 
     backgroundMusic.Play();
 
@@ -81,7 +80,7 @@ void StateStage::Start() {
   }
 }
 
-void StateStage::Update(float dt) {
+void CloseCombatState::Update(float dt) {
   UpdateArray(dt);
 
   Camera::Update(dt);
@@ -137,14 +136,14 @@ void StateStage::Update(float dt) {
   }
 }
 
-void StateStage::Render() {
+void CloseCombatState::Render() {
   RenderArray();
 }
 
-void StateStage::Pause() {
+void CloseCombatState::Pause() {
   backgroundMusic.Stop();
 }
 
-void StateStage::Resume() {
+void CloseCombatState::Resume() {
   backgroundMusic.Play();
 }

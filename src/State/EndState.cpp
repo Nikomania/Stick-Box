@@ -10,10 +10,6 @@ EndState::EndState() : State(), backgroundMusic() {
   SDL_Log("EndState created!\n");
 }
 
-EndState::~EndState() {
-  objectArray.clear();
-}
-
 void EndState::LoadAssets() {
   GameObject* bgGO = new GameObject();
   SpriteRenderer* bgSprite = new SpriteRenderer(*bgGO);

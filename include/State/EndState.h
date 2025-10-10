@@ -6,7 +6,6 @@
 class EndState : public State {
 public:
   EndState();
-  ~EndState();
 
   void LoadAssets() override;
   void Update(float dt) override;
